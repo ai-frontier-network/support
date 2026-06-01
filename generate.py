@@ -33,10 +33,10 @@ logging.basicConfig(
 
 MAX_ARTICLES_LIMIT = 50
 MAX_HISTORY_LIMIT = 5000
-TEMPLATE_VERSION = "5.1.0"  # 5号店 生活防衛OS極限仕様（ハルシネーション＆漢字索引防止ガード搭載）
+TEMPLATE_VERSION = "5.2.0"  # 5号店 生活防衛OS・テーマ自動分類 ＆ 検索リンク完全統合仕様
 
 # ==========================================
-# 2. Pydanticスキーマ定義（生活防衛OS・v4.1.0）
+# 2. Pydanticスキーマ定義（生活防衛OS・v4.2.0）
 # ==========================================
 class PersonaBenefit(BaseModel):
     persona_name: str = Field(description="この生活防衛・稼ぎ方に直結するターゲット。15文字以内。")
@@ -48,10 +48,6 @@ class FAQItem(BaseModel):
 
 class ArticleOutputSchema(BaseModel):
     title: str = Field(description="不安・欲望・優越を刺激し、読者に「安心」を約束する35文字以内のタイトル。記事タイプに最適なSEOキーワードを必ず含めること。")
-    
-    # 🆕 漢字タイトルのふりがなインデックス化を成功させるための安全装置
-    title_initial_kana: str = Field(description="タイトルの1文字目の『読み仮名（ひらがな）』。漢字タイトルの場合は、その漢字の読みの最初の平仮名を設定してください。英数字の場合はそのまま半角英数字。例：『障害年金』なら『し』、『iDeCo』なら『I』")
-    
     search_intent: Literal['informational', 'commercial', 'transactional', 'navigational'] = Field(description="読者の検索意図を4分類から最適判定。")
     action_level: Literal['今すぐ申請', '今月中に確認', '知識として保存'] = Field(description="読者が今すぐ取るべき具体的なアクション指標。")
     life_stage: Literal['student', 'worker', 'family', 'senior', 'disabled'] = Field(description="この情報が最も深く突き刺さる読者の現在のライフステージ・属性。")
@@ -89,7 +85,7 @@ class ArticleOutputSchema(BaseModel):
     
     persona_benefits: list[PersonaBenefit] = Field(description="関連ターゲットとそのメリット。2〜3つ自律生成。")
     faq_list: list[FAQItem] = Field(description="想定されるFAQ。必ず3つ生成。")
-    charo_insight: str = Field(description="編集長cocoroの眼。200文字程度。")
+    charo_insight: str = Field(description="編集長cocoroの眼。200文字程度. ")
     today_mission: str = Field(description="明日から読者が起こすべき具体的アクション。100文字程度。")
     slug: str = Field(description="半角英数字とハイフンのみのスラグ。")
 
@@ -103,10 +99,13 @@ def sanitize_slug(raw_slug: str) -> str:
         slug = f"explain-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     return slug[:80]
 
-# 一次情報の動的・厳密な突合＆ハルシネーションガード関数
+# 一次情報リンクのハルシネーション完全ガード関数
 def get_strategy_info(pillar_slug_candidate: str, article_text: str) -> dict:
     strategy_path = os.path.join("data", "strategy_master.json")
-    default_info = {"source_name": "公的情報機関", "source_url": "https://www.mhlw.go.jp/"} # デフォルトの安全な厚生労働省URL
+    default_info = {
+        "source_name": "厚生労働省：公的支援・制度案内公式（Google検索）",
+        "source_url": "https://www.google.com/search?q=厚生労働省+公的支援+制度+公式"
+    }
     
     if not os.path.exists(strategy_path):
         return default_info
@@ -114,10 +113,8 @@ def get_strategy_info(pillar_slug_candidate: str, article_text: str) -> dict:
         with open(strategy_path, "r", encoding="utf-8") as f:
             strategy_data = json.load(f)
         
-        # 記事が所属するピラー（または文章に含まれるキーワード）で突合
         pillar_data = strategy_data.get(pillar_slug_candidate)
         if not pillar_data:
-            # ピラーが合致しない場合は文章全体からキーワードトリガーを探す
             for key, val in strategy_data.items():
                 trigger = val.get("keyword_trigger", "").lower()
                 if trigger and trigger in article_text.lower():
@@ -125,7 +122,6 @@ def get_strategy_info(pillar_slug_candidate: str, article_text: str) -> dict:
                     break
                     
         if pillar_data and pillar_data.get("trust_links"):
-            # 登録されている中から最初の本物の公的リンクを返却
             link = pillar_data["trust_links"][0]
             return {
                 "source_name": link["title"],
@@ -176,32 +172,6 @@ def save_history(history: list):
             json.dump(trimmed, f, ensure_ascii=False, indent=2)
     except Exception as e:
         logging.error(f"履歴保存失敗: {e}")
-
-# 漢字ふりがな対応にアップグレードされたインデックス分類ヘルパー
-def get_index_char(title: str, title_initial_kana: str = "") -> str:
-    # AIがふりがな頭文字を出力している場合は最優先（漢字でも対応可能）
-    if title_initial_kana:
-        char = title_initial_kana[0].upper()
-    else:
-        if not title:
-            return "#"
-        char = title[0].upper()
-        
-    if re.match(r'[A-Z0-9]', char):
-        return char
-    
-    hira = "あかさたなはまやらわ"
-    # 平仮名、カタカナのUnicode範囲
-    if '\u3040' <= char <= '\u309f' or '\u30a0' <= char <= '\u30ff':
-        code = ord(char)
-        if '\u30a0' <= char <= '\u30ff':
-            code -= 96
-        char_converted = chr(code)
-        for i, (h, k) in enumerate(zip(hira[:-1], hira[1:])):
-            if h <= char_converted < k:
-                return hira[i]
-        return "わ"
-    return "#"
 
 # ==========================================
 # 4. RSS取得・スクレイピング
@@ -272,7 +242,7 @@ def build_page(body_template_path, title, date_iso, date_ja, source_url, source_
                 elif art_data.get("category") == art.get("category"):
                     backup_articles.append(art_data)
 
-            # 4段階難易度ソート
+            # 4段階難易度ソートロジック
             curr_diff = art.get("difficulty_level", "beginner")
             if curr_diff == "intermediate":
                 sort_order = ["intermediate", "advanced", "expert", "beginner"]
@@ -408,7 +378,6 @@ def run_article_generator(source_text: str, source_url: str, source_name: str) -
     client = genai.Client(api_key=api_key)
     model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
-    # プロンプトの提示
     prompt = f"""
     あなたは、激変する情報過多社会において、読者に「生活防衛・自立のための智慧としての生活防衛OS辞典」を授ける最高峰の福祉・金融専門の編集長です。
     提供された【情報素材】と【生存戦略マスター情報】をもとに、以下の【ルール】に沿って全自動執筆してください。
@@ -467,7 +436,7 @@ def run_article_generator(source_text: str, source_url: str, source_name: str) -
     art = validated.model_dump()
     
     # 🛡️ 【リンクハルシネーション完全ガード機構】
-    # AIが生成したURLが一時情報からズレるのを防ぐため、strategy_masterから確定的に正規リンクを当てはめます。
+    # AIが生成したURLがズレるのを防ぐため、strategy_masterから確定的にGoogle検索リンクをマッピングします。
     p_slug = art.get("pillar_slug", "life-defense")
     correct_source = get_strategy_info(p_slug, safe_text)
     
@@ -586,7 +555,7 @@ def generate_weekly_book():
         logging.error(f"電子書籍生成エラー: {e}")
 
 # ==========================================
-# 8. 再ビルド
+# 8. 再ビルド（SSGテーマ自動分類・最新1件フルレンダリング）
 # ==========================================
 def rebuild_index_and_rotate_storage():
     try:
@@ -672,19 +641,31 @@ def rebuild_index_and_rotate_storage():
                 all_articles=all_articles
             )
 
-        # 2. 五十音順・アルファベット索引ナビゲーション生成（AIふりがな対応を適用）
+        # 2. 6大テーマ（Pillar）ごとの自動分類マップの生成（完全自動・読み仮名不要）
+        pillar_names = {
+            "life-defense": "🛡️ 生活防衛（福祉・制度）",
+            "career": "💼 仕事・キャリア",
+            "side-business": "🚀 攻めの副業",
+            "household-optimization": "📉 家計改善・節約",
+            "asset-building": "📈 資産形成（NISA等）",
+            "life-recovery": "🤝 人生再建・相談窓口"
+        }
+
         index_map = {}
         for _, art in all_articles:
-            # 安全にふりがな頭文字（title_initial_kana）を引き渡す
-            head = get_index_char(art["title"], art.get("title_initial_kana", ""))
-            if head not in index_map:
-                index_map[head] = []
-            index_map[head].append(art)
+            p_slug = art.get("pillar_slug", "life-defense")
+            if p_slug not in index_map:
+                index_map[p_slug] = []
+            index_map[p_slug].append(art)
 
-        sorted_heads = sorted(index_map.keys(), key=lambda x: ord(x))
-        nav_html = " | ".join([f'<a href="#index-{h}" style="font-weight: 800; text-decoration: underline;">{h}</a>' for h in sorted_heads])
+        # アーカイブ用テーマナビゲーションHTMLの作成
+        nav_elements = []
+        for p_slug, p_name in pillar_names.items():
+            if p_slug in index_map:
+                nav_elements.append(f'<a href="#pillar-{p_slug}" style="font-weight: 800; text-decoration: underline; margin: 0 5px;">{p_name}</a>')
+        nav_html = " | ".join(nav_elements)
 
-        # 3. index.html ビルド
+        # 3. index.html ビルド（最新1件フルレンダリング ＆ 過去ログのグリッドカード一覧）
         _, hero_art = all_articles[0]
         hero_date_ja = datetime.now().strftime("%Y年%m月%d日 %H:%M")
         hero_date_iso = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+09:00")
@@ -747,27 +728,28 @@ def rebuild_index_and_rotate_storage():
             is_article=False
         )
 
-        # 4. archive.htmlのビルド
+        # 4. archive.htmlのビルド（テーマ別自動分類出力）
         archive_html = ""
-        for head in sorted_heads:
-            archive_html += f'<h3 id="index-{head}" style="font-size: 1.4rem; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px;">📍 {head}</h3>'
-            archive_html += '<div class="articles-grid">'
-            for art in index_map[head]:
-                a_title = html.escape(art["title"])
-                a_slug = sanitize_slug(art["slug"])
-                diff_ja = {"beginner": "基本知識", "intermediate": "申請手順", "advanced": "応用手続", "expert": "専門要件"}.get(art.get("difficulty_level", "beginner"), "基本")
-                archive_html += f"""
-                    <article class="article-card fade-element">
-                        <div class="article-meta">
-                            <span class="difficulty-tag" style="border: 1px solid var(--border-color); padding: 1px 6px; border-radius: 4px;">{diff_ja}</span>
-                            <span>{html.escape(art.get('topic_cluster', '生活防衛OS'))}</span>
-                        </div>
-                        <h3>{a_title}</h3>
-                        <p>{html.escape(art['one_word_summary'])}</p>
-                        <a href="articles/{a_slug}.html">解説を読む &rarr;</a>
-                    </article>
-                """
-            archive_html += '</div>'
+        for p_slug, p_name in pillar_names.items():
+            if p_slug in index_map:
+                archive_html += f'<h3 id="pillar-{p_slug}" style="font-size: 1.4rem; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px;">{p_name}</h3>'
+                archive_html += '<div class="articles-grid">'
+                for art in index_map[p_slug]:
+                    a_title = html.escape(art["title"])
+                    a_slug = sanitize_slug(art["slug"])
+                    diff_ja = {"beginner": "基本知識", "intermediate": "申請手順", "advanced": "応用手続", "expert": "専門要件"}.get(art.get("difficulty_level", "beginner"), "基本")
+                    archive_html += f"""
+                        <article class="article-card fade-element">
+                            <div class="article-meta">
+                                <span class="difficulty-tag" style="border: 1px solid var(--border-color); padding: 1px 6px; border-radius: 4px;">{diff_ja}</span>
+                                <span>{html.escape(art.get('topic_cluster', '生活防衛OS'))}</span>
+                            </div>
+                            <h3>{a_title}</h3>
+                            <p>{html.escape(art['one_word_summary'])}</p>
+                            <a href="articles/{a_slug}.html">解説を読む &rarr;</a>
+                        </article>
+                    """
+                archive_html += '</div>'
 
         build_page(
             body_template_path="template_archive.html",
