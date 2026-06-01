@@ -774,6 +774,8 @@ def rebuild_index_and_rotate_storage():
 # ==========================================
 def main():
     RSS_FEEDS = [
+        {"url": "https://www.mhlw.go.jp/stf/houdou/index.xml", "name": "厚生労働省：報道発表公式"},
+        {"url": "https://www.kokusen.go.jp/rss/hot_rss20.xml", "name": "国民生活センター：消費者トラブル注意喚起"},
         {"url": "https://www.reutersagency.com/feed/?best-topics=tech&post_type=best", "name": "Reuters Tech Strategy"},
         {"url": "https://www.cnbc.com/id/19854910/device/rss/rss.html", "name": "CNBC Tech Life Strategy"}
     ]
