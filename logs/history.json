@@ -8,5 +8,15 @@
     "url": "https://www.cnbc.com/2026/05/29/jim-cramer-says-dells-blowout-quarter-sets-up-a-crucial-week-for-ai-stocks.html",
     "processed_at": "2026-06-01T12:08:03.191784",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/01/5-things-to-know-before-the-market-opens.html",
+    "processed_at": "2026-06-01T12:21:04.885917",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/01/ai-startup-valuations-pre-chatgpt.html",
+    "processed_at": "2026-06-01T12:21:51.279924",
+    "status": "published"
   }
 ]
