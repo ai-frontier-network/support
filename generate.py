@@ -33,10 +33,10 @@ logging.basicConfig(
 
 MAX_ARTICLES_LIMIT = 50
 MAX_HISTORY_LIMIT = 5000
-TEMPLATE_VERSION = "5.0.0"  # 5号店 生活防衛OS極限仕様
+TEMPLATE_VERSION = "5.1.0"  # 5号店 生活防衛OS極限仕様（ハルシネーション＆漢字索引防止ガード搭載）
 
 # ==========================================
-# 2. Pydanticスキーマ定義（生活防衛OS・v4.0.0）
+# 2. Pydanticスキーマ定義（生活防衛OS・v4.1.0）
 # ==========================================
 class PersonaBenefit(BaseModel):
     persona_name: str = Field(description="この生活防衛・稼ぎ方に直結するターゲット。15文字以内。")
@@ -48,6 +48,10 @@ class FAQItem(BaseModel):
 
 class ArticleOutputSchema(BaseModel):
     title: str = Field(description="不安・欲望・優越を刺激し、読者に「安心」を約束する35文字以内のタイトル。記事タイプに最適なSEOキーワードを必ず含めること。")
+    
+    # 🆕 漢字タイトルのふりがなインデックス化を成功させるための安全装置
+    title_initial_kana: str = Field(description="タイトルの1文字目の『読み仮名（ひらがな）』。漢字タイトルの場合は、その漢字の読みの最初の平仮名を設定してください。英数字の場合はそのまま半角英数字。例：『障害年金』なら『し』、『iDeCo』なら『I』")
+    
     search_intent: Literal['informational', 'commercial', 'transactional', 'navigational'] = Field(description="読者の検索意図を4分類から最適判定。")
     action_level: Literal['今すぐ申請', '今月中に確認', '知識として保存'] = Field(description="読者が今すぐ取るべき具体的なアクション指標。")
     life_stage: Literal['student', 'worker', 'family', 'senior', 'disabled'] = Field(description="この情報が最も深く突き刺さる読者の現在のライフステージ・属性。")
@@ -99,6 +103,38 @@ def sanitize_slug(raw_slug: str) -> str:
         slug = f"explain-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     return slug[:80]
 
+# 一次情報の動的・厳密な突合＆ハルシネーションガード関数
+def get_strategy_info(pillar_slug_candidate: str, article_text: str) -> dict:
+    strategy_path = os.path.join("data", "strategy_master.json")
+    default_info = {"source_name": "公的情報機関", "source_url": "https://www.mhlw.go.jp/"} # デフォルトの安全な厚生労働省URL
+    
+    if not os.path.exists(strategy_path):
+        return default_info
+    try:
+        with open(strategy_path, "r", encoding="utf-8") as f:
+            strategy_data = json.load(f)
+        
+        # 記事が所属するピラー（または文章に含まれるキーワード）で突合
+        pillar_data = strategy_data.get(pillar_slug_candidate)
+        if not pillar_data:
+            # ピラーが合致しない場合は文章全体からキーワードトリガーを探す
+            for key, val in strategy_data.items():
+                trigger = val.get("keyword_trigger", "").lower()
+                if trigger and trigger in article_text.lower():
+                    pillar_data = val
+                    break
+                    
+        if pillar_data and pillar_data.get("trust_links"):
+            # 登録されている中から最初の本物の公的リンクを返却
+            link = pillar_data["trust_links"][0]
+            return {
+                "source_name": link["title"],
+                "source_url": link["url"]
+            }
+    except Exception as e:
+        logging.error(f"戦略マスターリンク抽出失敗: {e}")
+    return default_info
+
 def get_strategy_context(article_text: str) -> str:
     strategy_path = os.path.join("data", "strategy_master.json")
     if not os.path.exists(strategy_path):
@@ -141,16 +177,24 @@ def save_history(history: list):
     except Exception as e:
         logging.error(f"履歴保存失敗: {e}")
 
-def get_index_char(title: str) -> str:
-    if not title:
-        return "#"
-    first_char = title[0].upper()
-    if re.match(r'[A-Z0-9]', first_char):
-        return first_char
+# 漢字ふりがな対応にアップグレードされたインデックス分類ヘルパー
+def get_index_char(title: str, title_initial_kana: str = "") -> str:
+    # AIがふりがな頭文字を出力している場合は最優先（漢字でも対応可能）
+    if title_initial_kana:
+        char = title_initial_kana[0].upper()
+    else:
+        if not title:
+            return "#"
+        char = title[0].upper()
+        
+    if re.match(r'[A-Z0-9]', char):
+        return char
+    
     hira = "あかさたなはまやらわ"
-    if '\u3040' <= first_char <= '\u309f' or '\u30a0' <= first_char <= '\u30ff':
-        code = ord(first_char)
-        if '\u30a0' <= first_char <= '\u30ff':
+    # 平仮名、カタカナのUnicode範囲
+    if '\u3040' <= char <= '\u309f' or '\u30a0' <= char <= '\u30ff':
+        code = ord(char)
+        if '\u30a0' <= char <= '\u30ff':
             code -= 96
         char_converted = chr(code)
         for i, (h, k) in enumerate(zip(hira[:-1], hira[1:])):
@@ -199,7 +243,7 @@ def fetch_full_article_text(url: str) -> str:
         return ""
 
 # ==========================================
-# 5. レイアウト結合エンジン（最新1件フルレンダリング ＆ ピラー優先ソート）
+# 5. レイアウト結合エンジン（ピラー優先ソート）
 # ==========================================
 def build_page(body_template_path, title, date_iso, date_ja, source_url, source_name, replacements, output_path, is_article=False, slug="", art=None, all_articles=None) -> bool:
     try:
@@ -223,13 +267,12 @@ def build_page(body_template_path, title, date_iso, date_ja, source_url, source_
             for _, art_data in all_articles:
                 if art_data["slug"] == slug:
                     continue
-                # 同一ピラー、または同一カテゴリを分類
                 if art_data.get("pillar_slug") == art.get("pillar_slug"):
                     cluster_articles.append(art_data)
                 elif art_data.get("category") == art.get("category"):
                     backup_articles.append(art_data)
 
-            # 4段階難易度（expert含む）ソートロジック
+            # 4段階難易度ソート
             curr_diff = art.get("difficulty_level", "beginner")
             if curr_diff == "intermediate":
                 sort_order = ["intermediate", "advanced", "expert", "beginner"]
@@ -273,7 +316,7 @@ def build_page(body_template_path, title, date_iso, date_ja, source_url, source_
             combined_content = combined_content.replace("{{CSS_PATH}}", "/style.css")
             combined_content = combined_content.replace("{{JS_PATH}}", "/script.js")
             
-            # Combined JSON-LD @graph の自動生成
+            # Combined JSON-LD
             ld_json_graph = {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -351,7 +394,7 @@ def build_page(body_template_path, title, date_iso, date_ja, source_url, source_
         return False
 
 # ==========================================
-# 6. コア：生活防衛OS記事のAI自動生成（比喩正確性ガード搭載）
+# 6. コア：生活防衛OS記事のAI自動生成（比喩正確性＆リンク切れ防止）
 # ==========================================
 def run_article_generator(source_text: str, source_url: str, source_name: str) -> str:
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -365,7 +408,7 @@ def run_article_generator(source_text: str, source_url: str, source_name: str) -
     client = genai.Client(api_key=api_key)
     model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
-    # 比喩正確性ガード ＆ ライフステージマッピングプロンプト
+    # プロンプトの提示
     prompt = f"""
     あなたは、激変する情報過多社会において、読者に「生活防衛・自立のための智慧としての生活防衛OS辞典」を授ける最高峰の福祉・金融専門の編集長です。
     提供された【情報素材】と【生存戦略マスター情報】をもとに、以下の【ルール】に沿って全自動執筆してください。
@@ -422,6 +465,15 @@ def run_article_generator(source_text: str, source_url: str, source_name: str) -
         return ""
 
     art = validated.model_dump()
+    
+    # 🛡️ 【リンクハルシネーション完全ガード機構】
+    # AIが生成したURLが一時情報からズレるのを防ぐため、strategy_masterから確定的に正規リンクを当てはめます。
+    p_slug = art.get("pillar_slug", "life-defense")
+    correct_source = get_strategy_info(p_slug, safe_text)
+    
+    art["source_name"] = correct_source["source_name"]
+    art["source_url"] = correct_source["source_url"]
+
     slug = sanitize_slug(art["slug"])
 
     # JSONデータを保存
@@ -494,19 +546,9 @@ def generate_weekly_book():
         あなたは、激変するAI社会において、人々に温かく寄り添い、確かな生活防衛を支援する最高峰の編集責任者です。
         以下の【生活概念・データの断片】を美しく統合し、自立のための体系的電子書籍を執筆してください。
 
-        【執筆構成案】
-        第1章：生活防衛のための正しいマインドセットとセーフティネットの真実
-        第2章：現代社会のお金と暮らしを守り抜くロードマップ
-        第3章：穏やかに生きるための「これからの人生設計」の核心比喩
-        第4章：ココロの平穏を保ちながら、焦らずマイペースに歩む具体策
-        第5章：明日から読者が一歩ずつ踏み出せる実践行動シート
-
         【ルール】
         - markdownの装飾（```html や ``` など）はいっさい出力せず、直接 <h3>, <p>, <strong>, <blockquote> 等のHTMLタグだけを出力してください。
         - 各段落は、CSS側のマージン設定によって美しく配置されます。
-
-        【データ素材】
-        {materials_text}
         """
 
         book_html_content = ""
@@ -544,7 +586,7 @@ def generate_weekly_book():
         logging.error(f"電子書籍生成エラー: {e}")
 
 # ==========================================
-# 8. 再ビルド（SSG最新1件フルレンダリング・アドセンスインフィード）
+# 8. 再ビルド
 # ==========================================
 def rebuild_index_and_rotate_storage():
     try:
@@ -630,10 +672,11 @@ def rebuild_index_and_rotate_storage():
                 all_articles=all_articles
             )
 
-        # 2. 五十音順・アルファベット索引ナビゲーション生成
+        # 2. 五十音順・アルファベット索引ナビゲーション生成（AIふりがな対応を適用）
         index_map = {}
         for _, art in all_articles:
-            head = get_index_char(art["title"])
+            # 安全にふりがな頭文字（title_initial_kana）を引き渡す
+            head = get_index_char(art["title"], art.get("title_initial_kana", ""))
             if head not in index_map:
                 index_map[head] = []
             index_map[head].append(art)
@@ -641,19 +684,17 @@ def rebuild_index_and_rotate_storage():
         sorted_heads = sorted(index_map.keys(), key=lambda x: ord(x))
         nav_html = " | ".join([f'<a href="#index-{h}" style="font-weight: 800; text-decoration: underline;">{h}</a>' for h in sorted_heads])
 
-        # 3. index.html ビルド（最新1件フルレンダリング ＆ 過去ログのグリッドカード一覧）
+        # 3. index.html ビルド
         _, hero_art = all_articles[0]
         hero_date_ja = datetime.now().strftime("%Y年%m月%d日 %H:%M")
         hero_date_iso = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+09:00")
 
-        # 過去ロググリッド表示用の構築（アドセンス・インフィード自動挿入）
         articles_grid_html = ""
         for idx, (_, art) in enumerate(all_articles[1:]):
             a_title = html.escape(art["title"])
             a_slug = sanitize_slug(art["slug"])
             diff_ja = {"beginner": "基本知識", "intermediate": "申請手順", "advanced": "応用手続", "expert": "専門要件"}.get(art.get("difficulty_level", "beginner"), "基本")
             
-            # 4件目にアドセンスを自然にインフィード挿入する設計
             if idx == 3:
                 articles_grid_html += """
                 <div class="adsense-container" style="text-align: center; margin: 20px 0; min-height: 100px; width:100%;">
@@ -750,7 +791,6 @@ def rebuild_index_and_rotate_storage():
 # 9. オーケストレーター（メイン処理）
 # ==========================================
 def main():
-    # 5号店用：信頼性の高い厚生労働省や公的ニュースサイトに関連するIT・福祉関連のフィードをクローリング
     RSS_FEEDS = [
         {"url": "https://www.reutersagency.com/feed/?best-topics=tech&post_type=best", "name": "Reuters Tech Strategy"},
         {"url": "https://www.cnbc.com/id/19854910/device/rss/rss.html", "name": "CNBC Tech Life Strategy"}
@@ -763,7 +803,6 @@ def main():
     
     data_files = [f for f in os.listdir("data") if f.endswith(".json") and f != "strategy_master.json"]
     
-    # 初期シード（自立支援医療と障害年金の連動ガイド）
     if not data_files:
         if os.environ.get("ALLOW_DEMO_SEED", "true").lower() == "true":
             mock_text = "The Disability Pension (Shougai Nenkin) in Japan is a public social security system. Under the program, individuals with mental disorders, including depression or schizophrenia, can apply for grades 1, 2, or 3 financial assistance. Combined with the Services and Supports for Persons with Disabilities Act (Jiritsu Shien Iryou), medical expenses for outpatient psychiatric treatments can be reduced to 10 percent of the total."
