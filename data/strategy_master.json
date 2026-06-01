@@ -10,16 +10,16 @@
     ],
     "trust_links": [
       {
-        "title": "厚生労働省：障害年金案内公式",
-        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/nenkin/nenkin/shougai.html"
+        "title": "厚生労働省：障害年金案内公式（Google検索）",
+        "url": "https://www.google.com/search?q=厚生労働省+障害年金+案内+公式"
       },
       {
-        "title": "全国健康保険協会：傷病手当金について",
-        "url": "https://www.kyoukaikenpo.or.jp/g3/cat310/sb3040/r124/"
+        "title": "全国健康保険協会：傷病手当金について（Google検索）",
+        "url": "https://www.google.com/search?q=全国健康保険協会+傷病手当金+公式"
       },
       {
-        "title": "厚生労働省：生活保護制度",
-        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/seikatsuhogo/seikatsu-hogo/index.html"
+        "title": "厚生労働省：生活保護制度について（Google検索）",
+        "url": "https://www.google.com/search?q=厚生労働省+生活保護制度+公式"
       }
     ]
   },
@@ -33,12 +33,12 @@
     ],
     "trust_links": [
       {
-        "title": "厚生労働省：ハローワーク インターネットサービス",
-        "url": "https://www.hellowork.mhlw.go.jp/"
+        "title": "厚生労働省：ハローワーク公式（Google検索）",
+        "url": "https://www.google.com/search?q=ハローワーク+インターネットサービス+公式"
       },
       {
-        "title": "文部科学省：社会人の学び直し・リスキリング推進",
-        "url": "https://www.mext.go.jp/"
+        "title": "文部科学省：社会人の学び直し推進（Google検索）",
+        "url": "https://www.google.com/search?q=文部科学省+社会人の学び直し+リスキリング+公式"
       }
     ]
   },
@@ -52,12 +52,12 @@
     ],
     "trust_links": [
       {
-        "title": "厚生労働省：副業・兼業の促進に関するガイドライン",
-        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyoukankyou/kyougyou/index.html"
+        "title": "厚生労働省：副業ガイドライン（Google検索）",
+        "url": "https://www.google.com/search?q=厚生労働省+副業+兼業の促進に関するガイドライン"
       },
       {
-        "title": "国税庁：副業の所得と確定申告について",
-        "url": "https://www.nta.go.jp/"
+        "title": "国税庁：副業の確定申告について（Google検索）",
+        "url": "https://www.google.com/search?q=国税庁+副業+確定申告+公式"
       }
     ]
   },
@@ -71,12 +71,12 @@
     ],
     "trust_links": [
       {
-        "title": "消費者庁：家計管理と消費者被害防止",
-        "url": "https://www.caa.go.jp/"
+        "title": "消費者庁：家計管理とトラブル防止（Google検索）",
+        "url": "https://www.google.com/search?q=消費者庁+家計管理+公式"
       },
       {
-        "title": "資源エネルギー庁：省エネポータルサイト",
-        "url": "https://www.enecho.meti.go.jp/"
+        "title": "資源エネルギー庁：省エネポータル（Google検索）",
+        "url": "https://www.google.com/search?q=資源エネルギー庁+省エネポータルサイト+公式"
       }
     ]
   },
@@ -90,12 +90,12 @@
     ],
     "trust_links": [
       {
-        "title": "金融庁：新NISA特設ウェブサイト",
-        "url": "https://www.fsa.go.jp/policy/nisa2/index.html"
+        "title": "金融庁：新NISA特設ウェブ（Google検索）",
+        "url": "https://www.google.com/search?q=金融庁+新NISA+特設ウェブサイト"
       },
       {
-        "title": "厚生労働省：iDeCo公式（個人型確定拠出年金）",
-        "url": "https://www.ideco-koushin.jp/"
+        "title": "厚生労働省：iDeCo公式サイト（Google検索）",
+        "url": "https://www.google.com/search?q=iDeCo+公式+個人型確定拠出年金"
       }
     ]
   },
@@ -109,16 +109,16 @@
     ],
     "trust_links": [
       {
-        "title": "日本司法支援センター：法テラス公式",
-        "url": "https://www.houterasu.or.jp/"
+        "title": "日本司法支援センター：法テラス公式（Google検索）",
+        "url": "https://www.google.com/search?q=法テラス+公式+日本司法支援センター"
       },
       {
-        "title": "厚生労働省：障害福祉サービス等情報検索",
-        "url": "https://www.shofuku.mhlw.go.jp/"
+        "title": "厚生労働省：障害福祉サービス検索（Google検索）",
+        "url": "https://www.google.com/search?q=厚生労働省+障害福祉サービス等情報検索"
       },
       {
-        "title": "国民生活センター：全国の消費生活センター等相談窓口",
-        "url": "https://www.kokusen.go.jp/map/index.html"
+        "title": "国民生活センター：消費生活相談窓口（Google検索）",
+        "url": "https://www.google.com/search?q=国民生活センター+全国の消費生活センター"
       }
     ]
   }
