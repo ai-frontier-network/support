@@ -1,0 +1,125 @@
+{
+  "life-defense": {
+    "keyword_trigger": "生活防衛",
+    "seo_keywords": [
+      "障害年金 申請手順 初心者",
+      "傷病手当金 受給要件 わかりやすく",
+      "生活保護 申請条件 最新",
+      "高額療養費制度 控除限度額 算定",
+      "自立支援医療 精神通院 メリット"
+    ],
+    "trust_links": [
+      {
+        "title": "厚生労働省：障害年金案内公式",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/nenkin/nenkin/shougai.html"
+      },
+      {
+        "title": "全国健康保険協会：傷病手当金について",
+        "url": "https://www.kyoukaikenpo.or.jp/g3/cat310/sb3040/r124/"
+      },
+      {
+        "title": "厚生労働省：生活保護制度",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/seikatsuhogo/seikatsu-hogo/index.html"
+      }
+    ]
+  },
+  "career": {
+    "keyword_trigger": "キャリア",
+    "seo_keywords": [
+      "AI時代 生き残る仕事 リスキリング",
+      "在宅ワーク 未経験 おすすめ 最新",
+      "失業手当 受給期間 自己都合",
+      "職業訓練 給付金 もらい方"
+    ],
+    "trust_links": [
+      {
+        "title": "厚生労働省：ハローワーク インターネットサービス",
+        "url": "https://www.hellowork.mhlw.go.jp/"
+      },
+      {
+        "title": "文部科学省：社会人の学び直し・リスキリング推進",
+        "url": "https://www.mext.go.jp/"
+      }
+    ]
+  },
+  "side-business": {
+    "keyword_trigger": "副業",
+    "seo_keywords": [
+      "AI副業 初心者 安全 始め方",
+      "ブログ 個人開発 収益化 ロードマップ",
+      "コンテンツ販売 自動化 仕組み",
+      "サラリーマン 副業 確定申告 最新"
+    ],
+    "trust_links": [
+      {
+        "title": "厚生労働省：副業・兼業の促進に関するガイドライン",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyoukankyou/kyougyou/index.html"
+      },
+      {
+        "title": "国税庁：副業の所得と確定申告について",
+        "url": "https://www.nta.go.jp/"
+      }
+    ]
+  },
+  "household-optimization": {
+    "keyword_trigger": "家計改善",
+    "seo_keywords": [
+      "固定費 削減 即効 リスト",
+      "電気代 ガス代 節約 見直し 最新",
+      "スマホ代 通信費 節約 シミュレーション",
+      "サブスク 見直し 整理のコツ"
+    ],
+    "trust_links": [
+      {
+        "title": "消費者庁：家計管理と消費者被害防止",
+        "url": "https://www.caa.go.jp/"
+      },
+      {
+        "title": "資源エネルギー庁：省エネポータルサイト",
+        "url": "https://www.enecho.meti.go.jp/"
+      }
+    ]
+  },
+  "asset-building": {
+    "keyword_trigger": "資産形成",
+    "seo_keywords": [
+      "新NISA 成長投資枠 つみたて 違い",
+      "iDeCo メリット デメリット わかりやすく",
+      "インデックス投資 銘柄 選び方",
+      "米国株 ETF ほったらかし 資産形成"
+    ],
+    "trust_links": [
+      {
+        "title": "金融庁：新NISA特設ウェブサイト",
+        "url": "https://www.fsa.go.jp/policy/nisa2/index.html"
+      },
+      {
+        "title": "厚生労働省：iDeCo公式（個人型確定拠出年金）",
+        "url": "https://www.ideco-koushin.jp/"
+      }
+    ]
+  },
+  "life-recovery": {
+    "keyword_trigger": "人生再建",
+    "seo_keywords": [
+      "法テラス 無料法律相談 条件",
+      "就労移行支援 精神障害 メリット",
+      "消費生活センター トラブル 相談 窓口",
+      "地域包括支援センター 暮らしの相談"
+    ],
+    "trust_links": [
+      {
+        "title": "日本司法支援センター：法テラス公式",
+        "url": "https://www.houterasu.or.jp/"
+      },
+      {
+        "title": "厚生労働省：障害福祉サービス等情報検索",
+        "url": "https://www.shofuku.mhlw.go.jp/"
+      },
+      {
+        "title": "国民生活センター：全国の消費生活センター等相談窓口",
+        "url": "https://www.kokusen.go.jp/map/index.html"
+      }
+    ]
+  }
+}
