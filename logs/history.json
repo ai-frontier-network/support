@@ -38,5 +38,15 @@
     "url": "https://www.cnbc.com/2026/06/03/big-techs-ai-power-test-europe-softbank-france.html",
     "processed_at": "2026-06-03T05:18:56.422166",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/03/where-jim-cramer-stands-on-crowdstrike-and-broadcom-ahead-of-earnings.html",
+    "processed_at": "2026-06-03T17:18:48.074259",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/03/uber-layoffs-people-division-ai.html",
+    "processed_at": "2026-06-03T17:19:15.389911",
+    "status": "published"
   }
 ]
