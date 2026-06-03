@@ -28,5 +28,15 @@
     "url": "https://www.cnbc.com/2026/06/02/trump-executive-order-ai.html",
     "processed_at": "2026-06-02T16:56:41.101900",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/03/humanoid-robots-trillion-dollar-ai-market.html",
+    "processed_at": "2026-06-03T05:18:28.743707",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/03/big-techs-ai-power-test-europe-softbank-france.html",
+    "processed_at": "2026-06-03T05:18:56.422166",
+    "status": "published"
   }
 ]
