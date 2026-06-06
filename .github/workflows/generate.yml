@@ -2,7 +2,7 @@ name: AI Article & Book Generator (Life Support OS)
 
 on:
   schedule:
-    - cron: '20 0,12 * * *'  # 毎日日本時間の朝9時20分と夜9時20分（UTC 0:20, 12:20）に自動更新！
+    - cron: '0 0 * * *'  # 毎日日本時間の朝9時20分と夜9時20分（UTC 0:20, 12:20）に自動更新！
   workflow_dispatch:        # 手動実行ボタン
 
 concurrency:
