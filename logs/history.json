@@ -158,5 +158,20 @@
     "url": "https://www.cnbc.com/2026/06/22/ro-khanna-challenges-elon-musk-to-televised-debate-after-doge-battle.html",
     "processed_at": "2026-06-23T02:27:46.732993",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/23/alphabet-verizon-dow-djia.html",
+    "processed_at": "2026-06-24T02:28:25.383728",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/23/cerebras-cbrs-q1-earnings-report-2026.html",
+    "processed_at": "2026-06-24T02:28:25.383737",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/06/23/an-off-grid-power-project-gets-a-major-proof-of-concept-what-it-means-for-ge-vernova.html",
+    "processed_at": "2026-06-24T02:28:50.286342",
+    "status": "published"
   }
 ]
