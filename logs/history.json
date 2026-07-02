@@ -208,5 +208,15 @@
     "url": "https://www.cnbc.com/2026/06/30/anthropic-says-trump-admin-has-lifted-export-controls-on-claude-fable-5-and-mythos-5.html",
     "processed_at": "2026-07-01T02:39:28.305922",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/07/02/samsung-sk-hynix-shares-slide-kospi-tech-selloff-nasdaq.html",
+    "processed_at": "2026-07-02T02:28:34.008272",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/07/01/alibaba-affiliate-ant-group-enters-the-humanoid-robot-market-with-12-deals.html",
+    "processed_at": "2026-07-02T02:29:01.155564",
+    "status": "published"
   }
 ]
