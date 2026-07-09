@@ -248,5 +248,15 @@
     "url": "https://www.cnbc.com/2026/07/07/jim-cramer-markets-reaction-samsung-signal-shift-ai-leadership.html",
     "processed_at": "2026-07-08T01:51:35.059182",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/07/08/world-cup-drives-google-search-to-record-queries-per-second.html",
+    "processed_at": "2026-07-09T02:04:29.983097",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/07/08/jim-cramer-risk-bull-market-resurfacing.html",
+    "processed_at": "2026-07-09T02:04:54.270052",
+    "status": "published"
   }
 ]
