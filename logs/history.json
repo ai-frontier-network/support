@@ -423,5 +423,10 @@
     "url": "https://www.cnbc.com/2026/08/08/verizon-mobile-outage-downdetector.html",
     "processed_at": "2026-08-09T01:00:57.925338",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/08/09/israeli-startup-irregular-linked-to-ai-hacks-openai-anthropic-meta.html",
+    "processed_at": "2026-08-10T01:02:39.473378",
+    "status": "published"
   }
 ]
