@@ -533,5 +533,25 @@
     "url": "https://www.cnbc.com/2026/08/28/deepseek-founder-liang-wenfeng-high-flyer-china-tech-ipos-funding.html",
     "processed_at": "2026-08-28T08:05:08.502897",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/08/28/apple-tv-one-price-hike-us.html",
+    "processed_at": "2026-08-29T04:52:24.852928",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/08/28/big-techs-ai-spending-is-putting-a-longtime-strengths-to-the-test.html",
+    "processed_at": "2026-08-29T04:52:24.852938",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/08/28/affirm-stock-earnings-levchin-gas-prices.html",
+    "processed_at": "2026-08-29T04:52:24.852941",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/08/28/gta-6-preview-netflix.html",
+    "processed_at": "2026-08-29T04:52:54.288315",
+    "status": "published"
   }
 ]
