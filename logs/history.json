@@ -588,5 +588,20 @@
     "url": "https://www.cnbc.com/2026/09/02/equinix-partners-with-nvidia-carves-niche-in-ai-data-center-boom.html",
     "processed_at": "2026-09-03T02:10:28.753475",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/09/04/south-korea-ai-rally-society-impact.html",
+    "processed_at": "2026-09-04T02:06:10.629987",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/09/03/magnificent-seven-jim-cramer-says-time-to-buy.html",
+    "processed_at": "2026-09-04T02:06:10.629994",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/09/03/adobe-anil-chakravarthy-ceo.html",
+    "processed_at": "2026-09-04T02:06:29.841364",
+    "status": "published"
   }
 ]
