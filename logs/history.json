@@ -738,5 +738,15 @@
     "url": "https://www.cnbc.com/2026/09/29/samsung-investment-nvidia-kkr-ai-helix-digital.html",
     "processed_at": "2026-09-29T03:24:21.253513",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/09/29/jim-cramer-ai-public-perception.html",
+    "processed_at": "2026-09-30T03:07:04.155196",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/09/29/trump-ai-super-intelligence.html",
+    "processed_at": "2026-09-30T03:07:31.393352",
+    "status": "published"
   }
 ]
