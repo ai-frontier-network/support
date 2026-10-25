@@ -883,5 +883,15 @@
     "url": "https://www.cnbc.com/2026/10/23/ai-turmoil-neoclouds-struggle-credit-risks-jump-solidigm-pulls-ipo.html",
     "processed_at": "2026-10-24T02:36:43.299172",
     "status": "published"
+  },
+  {
+    "url": "https://www.cnbc.com/investingclub/2026/10/24/ai-funding-fears-rattle-wall-street-heres-how-were-adjusting-our-portfolio.html",
+    "processed_at": "2026-10-25T02:24:35.660267",
+    "status": "skipped"
+  },
+  {
+    "url": "https://www.cnbc.com/2026/10/24/nvidias-role-as-ai-financier-faces-first-big-test-as-neoclouds-take-market-hit.html",
+    "processed_at": "2026-10-25T02:24:52.664867",
+    "status": "published"
   }
 ]
